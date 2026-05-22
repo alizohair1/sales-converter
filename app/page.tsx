@@ -139,7 +139,7 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-4">
             <img src="/logo.png" style={{ width: 40, height: 40, objectFit: 'contain' }} />
             <span className="mono text-xs tracking-widest" style={{ color: 'var(--muted)' }}>
-              JT RESTAURANT SYSTEMS
+              Johhny & Jugnu
             </span>
           </div>
           <h1 className="mono text-4xl font-bold mb-2" style={{ color: 'var(--text)' }}>
@@ -397,7 +397,7 @@ export default function Home() {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         }}>
           <span className="mono" style={{ fontSize: 11, color: 'var(--muted)', letterSpacing: 1 }}>
-            JT RESTAURANT · SALES TOOLS
+            Johhny & Jugnu · Conversion TOOLS
           </span>
           <span style={{ fontSize: 12, color: 'var(--border)' }}>
             All processing happens locally in your browser
