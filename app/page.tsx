@@ -137,10 +137,7 @@ export default function Home() {
         {/* Header */}
         <div className="mb-12 animate-fade-up">
           <div className="flex items-center gap-3 mb-4">
-            <div style={{
-              width: 40, height: 40, background: 'var(--accent)',
-              clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-            }} />
+            <img src="/logo.png" style={{ width: 40, height: 40, objectFit: 'contain' }} />
             <span className="mono text-xs tracking-widest" style={{ color: 'var(--muted)' }}>
               JT RESTAURANT SYSTEMS
             </span>
