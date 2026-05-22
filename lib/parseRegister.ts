@@ -1,19 +1,21 @@
 // lib/parseRegister.ts
 // Parses raw Sales Register (.xls/.xlsx) into 10-minute interval row objects
-// 
+//
 // SR structure per order header row (columns):
 //   col0 = "DATE :"
 //   col1 = date (as date string/timestamp)
 //   col2 = shift letter (A or B)
-//   col3 = HOUR (0-23) — this is the actual clock hour
+//   col3 = HOUR (0-23)
 //   col4 = " : "
-//   col5 = MINUTE (0-59) — actual clock minute within the hour
+//   col5 = MINUTE (0-59)
 //   col7 = till type (TAKE AWAY / HOME DEL)
 //   col9 = customer name
 //   col11 = payment method
 //   col12 = receipt number
 //
 // Item row columns:
+//   col0 = item code
+//   col2 = item name
 //   col5 = qty
 //   col7 = rate (unit price)
 //   col8 = amount (qty * rate)
@@ -24,14 +26,14 @@ export interface SaleRow {
   till: string;
   customer: string;
   payment: string;
-  items: Record<string, number>;    // qty per item
-  amounts: Record<string, number>;  // PKR amount per item
+  items: Record<string, number>;        // qty mode
+  amounts: Record<string, number>;      // amount mode
 }
 
 export interface OrderRecord {
   date: string;
-  time: string;       // HH:MM actual time
-  timeBucket: string; // HH:M0 floored to 10-min
+  time: string;
+  timeBucket: string;
   till: string;
   customer: string;
   payment: string;
@@ -47,7 +49,7 @@ export function parseSalesRegister(rawRows: (string | number | null)[][]): Order
     const row = rawRows[i];
     const cell0 = String(row[0] ?? '').trim();
 
-    // ── Order header ──────────────────────────────────────────────────────────
+    // ── Order header ─────────────────────────────────────────────────────────
     if (cell0 === 'DATE :' || cell0.startsWith('DATE :')) {
       if (current) orders.push(current);
 
@@ -69,13 +71,13 @@ export function parseSalesRegister(rawRows: (string | number | null)[][]): Order
       continue;
     }
 
-    // ── Item row ──────────────────────────────────────────────────────────────
+    // ── Item row ─────────────────────────────────────────────────────────────
     if (current) {
       const code   = String(row[0] ?? '').trim();
       const name   = String(row[2] ?? '').trim();
-      const qty    = Math.abs(safeFloat(row[5], 0)) || 1;  // col5 = qty
-      const rate   = Math.abs(safeFloat(row[7], 0));        // col7 = rate
-      const amount = Math.abs(safeFloat(row[8], 0));        // col8 = amount
+      const qty    = Math.abs(safeFloat(row[5], 0)) || 1;
+      const rate   = Math.abs(safeFloat(row[7], 0));
+      const amount = Math.abs(safeFloat(row[8], 0));
 
       const isValidItem =
         code &&
@@ -84,11 +86,16 @@ export function parseSalesRegister(rawRows: (string | number | null)[][]): Order
         name !== 'nan' &&
         name !== 'NaN' &&
         !cell0.startsWith('DATE :') &&
-        row[4] !== 'G.AMOUNT :' &&
         String(row[4] ?? '').trim() !== 'G.AMOUNT :';
 
       if (isValidItem) {
-        current.items.push({ code, name: name.toUpperCase().replace(/\s+/g, ' '), qty, rate, amount });
+        current.items.push({
+          code,
+          name: name.toUpperCase().replace(/\s+/g, ' '),
+          qty,
+          rate,
+          amount,
+        });
       }
     }
   }
@@ -144,7 +151,9 @@ export function buildOutputTable(
   const data = rows.map(r => [
     r.date, r.time, r.till, r.customer, r.payment,
     ...allItems.map(item =>
-      mode === 'amount' ? (r.amounts[item] || '') : (r.items[item] || '')
+      mode === 'amount'
+        ? (r.amounts[item] || '')
+        : (r.items[item]   || '')
     ),
   ]);
   return [header, ...data];
