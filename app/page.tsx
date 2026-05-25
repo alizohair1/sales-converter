@@ -126,6 +126,20 @@ export default function Home() {
     saveAs(blob, fileName.replace(/\.(xls|xlsx|csv)$/i, '') + suffix);
   };
 
+  const downloadCSV = () => {
+    if (!saleRows.length) return;
+    const table = buildOutputTable(saleRows, allItems, outputMode);
+    const csvContent = table.map(row =>
+      row.map(cell => {
+        const s = String(cell ?? '');
+        return /[,"\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      }).join(',')
+    ).join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const suffix = outputMode === 'amount' ? '_amount.csv' : '_10min.csv';
+    saveAs(blob, fileName.replace(/\.(xls|xlsx|csv)$/i, '') + suffix);
+  };
+
   const reset = () => {
     setStatus('idle'); setStats(null); setError('');
     setPreview([]); setFileName(''); setOutputMode('qty');
@@ -334,7 +348,18 @@ export default function Home() {
                 onMouseOver={e => (e.currentTarget.style.background = 'var(--accent2)')}
                 onMouseOut={e => (e.currentTarget.style.background = 'var(--accent)')}
               >
-                ↓ DOWNLOAD {outputMode === 'qty' ? 'QUANTITY' : 'AMOUNT'} XLSX
+                ↓ XLSX
+              </button>
+              <button onClick={downloadCSV} style={{
+                flex: 1, padding: '16px 32px', background: 'transparent',
+                border: '2px solid var(--accent)', borderRadius: 10, color: 'var(--accent)',
+                fontSize: 15, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'Space Mono, monospace', letterSpacing: 1, transition: 'all 0.2s',
+              }}
+                onMouseOver={e => { e.currentTarget.style.background = 'rgba(249,115,22,0.08)'; }}
+                onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}
+              >
+                ↓ CSV
               </button>
               <button onClick={reset} style={{
                 padding: '16px 24px', background: 'transparent',
