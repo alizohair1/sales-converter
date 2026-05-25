@@ -73,7 +73,7 @@ export function parseSalesRegister(rawRows: (string | number | null)[][]): Order
     if (current) {
       const code   = String(row[0] ?? '').trim();
       const name   = String(row[2] ?? '').trim();
-      const qty    = Math.abs(safeFloat(row[5], 0)) || 1;
+      const qty    = Math.abs(safeFloat(row[5], 0));
       const rate   = Math.abs(safeFloat(row[7], 0));
       const amount = Math.abs(safeFloat(row[8], 0));
 
@@ -132,7 +132,7 @@ export function parseSalesRegisterCSV(csvText: string): OrderRecord[] {
       // This row also contains one item at col21-26
       const code   = String(row[21] ?? '').trim();
       const name   = String(row[22] ?? '').trim();
-      const qty    = Math.abs(safeFloat(row[23], 0)) || 1;
+      const qty    = Math.abs(safeFloat(row[23], 0));
       const rate   = Math.abs(safeFloat(row[25], 0));
       const amount = Math.abs(safeFloat(row[26], 0));
       if (code && name && name !== 'Item Description') {
@@ -145,7 +145,7 @@ export function parseSalesRegisterCSV(csvText: string): OrderRecord[] {
 
       const code   = col8;
       const name   = String(row[9]  ?? '').trim();
-      const qty    = Math.abs(safeFloat(row[10], 0)) || 1;
+      const qty    = Math.abs(safeFloat(row[10], 0));
       const rate   = Math.abs(safeFloat(row[12], 0));
       const amount = Math.abs(safeFloat(row[13], 0));
 
