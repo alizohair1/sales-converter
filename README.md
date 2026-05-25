@@ -1,4 +1,4 @@
-# JT Sales Register Converter
+# JJ Sales Register Converter
 
 A cloud-based web app that converts your **Sales Register** (`.xls`/`.xlsx`) into a **10-Minute Interval Summary** — the same format as `sales_10min_06apr_jt.xlsx`.
 
